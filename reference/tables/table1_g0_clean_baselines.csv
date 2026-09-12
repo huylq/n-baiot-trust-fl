@@ -1,0 +1,5 @@
+scenario,method,rho,malicious_count,accuracy_pct_mean,accuracy_pct_std,f1_macro_pct_mean,f1_macro_pct_std,attribution_precision,attribution_recall,time_to_detection_rounds,flag_false_positive_rate,suppression_fpr,final_malicious_weight_share
+S1_centralized,Centralized (clean),,0,99.764,0.015,99.764,0.015,,,,,,
+S1_local_only,Local-only (clean),,0,99.683,0.011,99.683,0.011,,,,,,
+S1,"FedAvg (clean, no attack)",,0,99.656,0.018,99.656,0.018,,,,,,
+S1_trust,Trust v2 (clean),,0,99.45,0.03,99.45,0.03,0.0,0.0,,0.0,0.1778,0.0

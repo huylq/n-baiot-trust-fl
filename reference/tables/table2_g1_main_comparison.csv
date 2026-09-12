@@ -1,0 +1,12 @@
+scenario,method,rho,malicious_count,accuracy_pct_mean,accuracy_pct_std,f1_macro_pct_mean,f1_macro_pct_std,attribution_precision,attribution_recall,time_to_detection_rounds,flag_false_positive_rate,suppression_fpr,mean_honest_suppressed_per_round,final_malicious_weight_share
+S1,"FedAvg (clean, no attack)",,0,99.656,0.018,99.656,0.018,,,,,,,
+B_cmean,Norm-clipped mean,1.0,2,99.548,0.014,99.548,0.014,,,,,,,
+S4,Trust v2 (proposed),1.0,2,99.399,0.034,99.399,0.034,1.0,1.0,8.0,0.0,0.3143,0.1435,0.0
+B_tmean,"Trimmed mean (Yin et al., 2018)",1.0,2,99.384,0.043,99.384,0.043,,,,,,,
+B_krum,"Krum (Blanchard et al., 2017)",1.0,2,99.333,0.04,99.333,0.04,,,,,,,
+S3,"Trust ablation S3 (mean ref + self-loss, no memory)",1.0,2,99.301,0.037,99.301,0.037,0.0,0.0,,0.0,1.0,1.0,0.0
+S2m,Coordinate-wise median,1.0,2,99.293,0.047,99.293,0.047,,,,,,,
+B_mkrum,"Multi-Krum (Blanchard et al., 2017)",1.0,2,99.281,0.051,99.281,0.051,,,,,,,
+B_fltrust,"FLTrust (Cao et al., 2021)",1.0,2,99.254,0.029,99.254,0.029,,,,,,,
+S2,FedAvg (no defense),1.0,2,98.385,0.025,98.385,0.025,,,,,,,
+B_fgold,"FoolsGold (Fung et al., 2020)",1.0,2,89.887,0.552,89.803,0.566,,,,,,,

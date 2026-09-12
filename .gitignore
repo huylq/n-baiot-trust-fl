@@ -1,0 +1,49 @@
+# Environments and generated Python files
+.venv*/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+
+# Include only the fixed experiment subset; ignore other local data.
+/code/data/*
+!/code/data/dataset20000/
+/code/data/dataset20000/*
+!/code/data/dataset20000/*.csv
+
+# Raw data, optional rebuilt subsets, and generated experiments
+data/full-raw/
+data/dataset20000/
+outputs/
+code/outputs/
+paper/
+code/paper/
+audit/
+Submit/
+Ref/
+code/paper_generators/
+tmp/
+.dist/
+*.npz
+*.log
+
+# Local settings and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials*.json
+*.local.json
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak
+~$*

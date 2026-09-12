@@ -1,0 +1,10 @@
+scenario,method,rho,malicious_count,accuracy_pct_mean,accuracy_pct_std,f1_macro_pct_mean,f1_macro_pct_std,attribution_precision,attribution_recall,time_to_detection_rounds,flag_false_positive_rate,suppression_fpr,mean_honest_suppressed_per_round,final_malicious_weight_share
+S2m,Coordinate-wise median,1.0,3,99.469,0.1,99.469,0.1,,,,,,,
+S4,Trust v2 (proposed),1.0,3,99.465,0.062,99.465,0.062,0.87,1.0,8.0,0.1,0.7,0.1681,0.1281
+B_mkrum,"Multi-Krum (Blanchard et al., 2017)",1.0,3,99.434,0.026,99.434,0.026,,,,,,,
+S4,Trust v2 (proposed),1.0,2,99.399,0.034,99.399,0.034,1.0,1.0,8.0,0.0,0.3143,0.1435,0.0
+S4,Trust v2 (proposed),1.0,1,99.384,0.029,99.384,0.029,0.8,1.0,8.0,0.05,0.375,0.1494,0.0
+S2m,Coordinate-wise median,1.0,1,99.311,0.031,99.311,0.031,,,,,,,
+S2m,Coordinate-wise median,1.0,2,99.293,0.047,99.293,0.047,,,,,,,
+B_mkrum,"Multi-Krum (Blanchard et al., 2017)",1.0,1,99.286,0.05,99.286,0.05,,,,,,,
+B_mkrum,"Multi-Krum (Blanchard et al., 2017)",1.0,2,99.281,0.051,99.281,0.051,,,,,,,

@@ -1,0 +1,12 @@
+scenario,rho,malicious_count,precision_at_detection,recall_at_detection
+S4,0.2,3,1.0,1.0
+S4,0.3,3,1.0,1.0
+S4,0.4,3,1.0,1.0
+S4,0.5,3,1.0,1.0
+S4,0.7,3,1.0,1.0
+S4,1.0,1,1.0,1.0
+S4,1.0,2,1.0,1.0
+S4,1.0,3,1.0,1.0
+S4_minus_CT1,1.0,3,0.0,0.0
+S4_minus_CT3,1.0,3,,0.0
+S4_minus_verif,1.0,3,1.0,1.0

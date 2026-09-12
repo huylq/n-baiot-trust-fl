@@ -1,0 +1,6 @@
+scenario,method,rho,malicious_count,accuracy_pct_mean,accuracy_pct_std,f1_macro_pct_mean,f1_macro_pct_std,attribution_precision,attribution_recall,time_to_detection_rounds,flag_false_positive_rate,suppression_fpr,mean_honest_suppressed_per_round,final_malicious_weight_share
+S4_minus_CT3,S4 w/o CT3 (no memory),1.0,3,99.481,0.058,99.481,0.058,0.0,0.0,,0.0,0.8,0.303,0.0591
+S3,"Trust ablation S3 (mean ref + self-loss, no memory)",1.0,3,99.476,0.057,99.476,0.057,0.0,0.0,,0.0,1.0,1.0,0.0
+S4,Trust v2 (proposed),1.0,3,99.465,0.062,99.465,0.062,0.87,1.0,8.0,0.1,0.7,0.1681,0.1281
+S4_minus_verif,S4 + self-reported loss,1.0,3,99.447,0.038,99.447,0.038,0.66,1.0,8.0,0.2667,0.8,0.2844,0.0613
+S4_minus_CT1,S4 w/o CT1 (mean reference),1.0,3,98.523,0.938,98.523,0.939,0.3333,1.0,11.4,1.0,1.0,0.88,0.0
