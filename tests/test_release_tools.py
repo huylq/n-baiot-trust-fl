@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
 import unittest
 from pathlib import Path
@@ -54,6 +55,24 @@ class ResultComparisonTests(unittest.TestCase):
         for group in ("G0", "G1", "G2", "G3", "G4"):
             config = json.loads((ROOT / "configs" / f"{group}.json").read_text())
             self.assertEqual(config, {"schema_version": 2, "experiments": {"groups": [group]}})
+
+
+class ArtifactCommandTests(unittest.TestCase):
+    def test_help(self):
+        result = subprocess.run(
+            [sys.executable, "-B", str(ROOT / "scripts" / "build_artifacts.py"), "--help"],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("tables, workbooks and figures", result.stdout)
+        self.assertIn("--index", result.stdout)
+        self.assertIn("--output-dir", result.stdout)
+
+    def test_documented_entrypoint(self):
+        for path in (ROOT / "README.md", ROOT / "docs" / "reproducibility.md"):
+            text = path.read_text(encoding="utf-8")
+            self.assertIn("scripts/build_artifacts.py", text)
+            self.assertNotIn("scripts/build_paper.py", text)
 
 
 if __name__ == "__main__":

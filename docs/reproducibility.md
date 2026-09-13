@@ -32,19 +32,43 @@ across groups. These are not 240 independent experimental conditions.
 
 ## Reference and comparison
 
-`reference/tables/` and `reference/excel/` contain the supplied numeric results.
-`reference/figures/` preserves both the original PNGs and the manually edited
-PDFs for comparison. Neither image format is used as numeric ground truth.
-These are intentionally distinct from newly generated `paper/` outputs.
+`reference/tables/` and `reference/excel/` contain the numerical comparison
+targets. `reference/figures/` contains PDF/PNG figures generated from experiment
+results by the figure code. Numerical verification uses result records, not
+pixels or PDF file hashes. New exports are written separately to `paper/`.
 
 `scripts/verify_results.py` matches experiment keys and compares numeric values
-with absolute tolerance 1e-12. It reports missing/extra rows and supplemental
-diagnostics absent from earlier exports. It does not claim that every platform
+with absolute tolerance 1e-12. It reports missing/extra rows and any diagnostic
+values without a reference value. It does not claim that every platform
 or BLAS implementation produces bit-identical results. The dependency lock was
 validated with Python 3.11 on Windows; other platforms require validation.
 PDF metadata, raster rendering and file timestamps are not expected to match.
 
-## Preserved implementation limitations
+## Tables and figures
+
+Run `python scripts/build_artifacts.py` after completing G0-G4 with all five
+seeds and 50 rounds. The command exports 15 CSV tables, five Excel workbooks
+and seven figures in both PDF and PNG formats. It also records the input run
+paths in the generated output README. No manuscript text is generated.
+
+The figure filenames identify plots, not their numbering in the manuscript:
+
+| Figure file stem | Content |
+| --- | --- |
+| `fig1_rho_boundary` | Label-flipping probability sweep (G2) |
+| `fig2_main_comparison` | Main method comparison (G1) |
+| `fig3_trust_trajectories` | Representative trust trajectories (G1, seed 0) |
+| `fig4_attribution_rounds` | Cumulative attribution across rounds (G1/G4) |
+| `fig5_g0_diagnostics` | Honest-client update diagnostics (G0) |
+| `fig6_ablation` | Mechanism variants (G4) |
+| `fig7_malicious_count` | Nested attacker-set comparison (G3) |
+
+Accuracy is shown as a percentage; `pp` denotes percentage points. Accuracy
+error bars show mean +/- one sample standard deviation across five seeds,
+not confidence intervals. Figure annotations and plot ranges target the
+documented experiment grid; check them when changing the configuration.
+
+## Metric interpretation and execution constraints
 
 - Mean time to detection averages detected attackers only; it must be read with
   recall. Cumulative attribution uses strike flags, not every zero-weight client.
@@ -54,36 +78,11 @@ PDF metadata, raster rendering and file timestamps are not expected to match.
   Full-run cumulative precision can therefore differ from detection-window precision.
 - S3 can reject all updates after warm-up and retain the preceding model. Its
   high clean-test accuracy does not establish successful continued learning.
-- The original model writer names checkpoints by scenario and seed, without
+- The model writer names checkpoints by scenario and seed, without
   rho or attacker count. G2/G3 consequently overwrite earlier checkpoints
   within a run. Per-configuration metrics and audit chains remain distinct.
-  This release preserves that behavior; use logs/workbooks for the full grid,
+  Use logs/workbooks for the full grid,
   not the number of model files as a completion check. Local-only models are
   not exported. Re-evaluating a checkpoint also requires its training-data scaler.
-- Original table/figure builders contain historical run identifiers. The
-  documented `scripts/build_paper.py` command supplies current paths and adapts
-  the G1 S4 audit filename; it does not alter table calculations or figure data.
-- Figures contain fixed annotations tied to the supplied five-seed experiment.
-  In Figure 6, the inherited phrase `one-seed collapse` is inconsistent with
-  the per-seed values: seeds 1 and 4 have the lower mean-reference accuracies.
-  The x-axis minimum of 98.2% also clips part of that error bar (mean about
-  98.523%, sample standard deviation about 0.938 percentage points).
-  These presentation issues are retained for author review, not silently corrected.
-- Manually edited reference PDFs cannot be reconstructed byte-for-byte by the
-  source figure generator. Numeric agreement and label/layout agreement are
-  separate checks. The figure builder requires the complete five-seed grid.
-- The current exports include an additional honest-suppression diagnostic and
-  G1 clean-baseline significance comparisons absent from some older workbooks.
-  Such additions are not differences in their shared metric values.
-
-## Scope
-
-This repository accompanies the supplied experiment implementation. Manuscript
-drafting tools, thesis-report material, local audit utilities and full raw data
-are not part of the public source package. The fixed experiment subset is
-included. Dataset preparation preserves the
-sampling procedure that recreates the supplied subset; it is not part of model
-training or a change to the federated algorithm.
-
-A code license and final paper citation must be selected by the authors before
-public release. No license is inferred from the dataset's separate license.
+- Use `scripts/build_artifacts.py`, rather than invoking individual builders,
+  so input paths are taken from the selected `runs.json` index.

@@ -115,10 +115,11 @@ def fig1_rho_boundary() -> None:
         xy=(0.32, clean_cost), xytext=(0.24, 0.62), fontsize=6.5, color=BLUE,
         arrowprops={"arrowstyle": "-", "color": BLUE, "linewidth": 0.6},
     )
-    # The rho<=0.7 spread is at most 0.09 pp; only the rho=1.0 contrast
-    # is visually material on this scale.
+    low_rho = sweep[sweep["rho"] <= 0.7]
+    max_gap_pp = float(abs(low_rho["s4_accuracy_drop"] - low_rho["s2_accuracy_drop"]).max() * 100)
     top.annotate(
-        r"$\rho\leq0.7$: gaps $\leq$ 0.09 pp", xy=(0.58, 0.92),
+        r"$\rho\leq0.7$: S4 vs. FedAvg" + "\n" + f"gap $\\leq$ {np.ceil(max_gap_pp * 100) / 100:.2f} pp",
+        xy=(0.58, 0.85),
         fontsize=6.5, color=GRAY, ha="center", style="italic",
     )
     top.annotate(
@@ -194,6 +195,7 @@ def fig2_main_comparison() -> None:
         color="#333333", linestyle=":", linewidth=1.0,
     )
     ax.set_yticks(y)
+    ax.set_ylim(-0.7, len(rows) - 0.5)
     labels_fmt = [
         (f"$\\bf{{{lbl}}}$" if scenario == "S4" else lbl).replace(" ", r"\ ")
         if scenario == "S4" else lbl
@@ -396,7 +398,8 @@ def fig6_ablation() -> None:
     y = np.arange(len(order))[::-1]
 
     fig, (left, right) = plt.subplots(
-        1, 2, figsize=(7.0, 2.3), gridspec_kw={"width_ratios": [1.15, 1.0], "wspace": 0.08},
+        1, 2, figsize=(7.0, 2.8), sharey=True,
+        gridspec_kw={"width_ratios": [1.15, 1.0], "wspace": 0.13},
     )
     for yi, scenario in zip(y, order):
         row = rows.loc[scenario]
@@ -410,12 +413,13 @@ def fig6_ablation() -> None:
         if scenario == "S4_minus_CT1":
             left.text(
                 row["accuracy_mean"] * 100 + 0.06, yi - 0.42,
-                "std ±0.94 (one-seed collapse)", fontsize=6.5, color=GRAY,
+                f"SD = {row['accuracy_std'] * 100:.2f} pp", fontsize=6.5, color=GRAY,
             )
     left.set_yticks(y)
     left.set_yticklabels([labels[s] for s in order])
     left.set_xlabel("Accuracy (%)")
-    left.set_xlim(98.2, 99.75)
+    left.set_xlim(97.3, 99.75)
+    left.set_ylim(-0.65, len(order) - 0.35)
 
     bar_height = 0.34
     right.barh(
@@ -427,14 +431,14 @@ def fig6_ablation() -> None:
         color=PURPLE, label="Precision",
     )
     right.set_yticks(y)
-    right.set_yticklabels([])
+    right.tick_params(axis="y", labelleft=False)
     right.set_xlim(0, 1.05)
     right.set_xlabel("Attribution score")
-    right.legend(frameon=False, loc="lower right")
+    right.legend(frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.23), ncol=2)
     for yi, scenario in zip(y, order):
         if rows.loc[scenario, "attribution_recall_mean"] == 0:
             right.text(0.03, yi, "no attribution", fontsize=7, color=GRAY, va="center")
-    fig.tight_layout()
+    fig.subplots_adjust(left=0.22, right=0.99, bottom=0.24, top=0.97)
     save(fig, "fig6_ablation")
 
 
@@ -474,10 +478,10 @@ def fig7_malicious_count() -> None:
     # (p=0.084) and S4 at m=3 is indistinguishable from the clean ceiling
     # (p=0.66) -- the meaningful claims are ceiling-recovery and detection.
     ax.text(
-        0.98, 0.03,
+        0.98, -0.30,
         "S4: recall = 1.0, TTD = 8 at every count;\n"
         "accuracy $\\approx$ clean ceiling (m=3: $p=0.66$)",
-        transform=ax.transAxes, fontsize=6.8, color=BLUE, va="bottom", ha="right",
+        transform=ax.transAxes, fontsize=6.8, color=BLUE, va="top", ha="right",
     )
     ax.legend(frameon=False, loc="upper left", fontsize=6.8)
     save(fig, "fig7_malicious_count")

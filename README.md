@@ -16,8 +16,7 @@ python -m venv .venv
 python -m pip install -r requirements-lock.txt
 ```
 
-The lock records the validated environment. The original unpinned dependency
-list remains in `code/requirements.txt`; use the lock for reproduction.
+Use the pinned dependencies in `requirements-lock.txt` for reproduction.
 
 ## Included dataset
 
@@ -35,7 +34,7 @@ This compares all files with `data/dataset20000_manifest.csv`. Git preserves
 their original line endings so the SHA-256 checks also work after checkout.
 The subset derives from N-BaIoT by Meidan et al. (2018), distributed by UCI
 under CC BY 4.0. See [dataset attribution and license](LICENSE-DATA.md);
-this license is separate from the pending code license.
+this license applies to the dataset, not the source code.
 
 ## Optional: rebuild the subset from raw data
 
@@ -94,13 +93,24 @@ Full paper grid: five seeds **0, 1, 2, 3, 4** and **50 federated rounds**:
 ```sh
 python scripts/run_grid.py
 python scripts/verify_results.py
-python scripts/build_paper.py
+python scripts/build_artifacts.py
 ```
 
 Groups run sequentially in isolated processes. Add `--data-dir PATH` to use a
 verified dataset elsewhere. Existing group outputs are never overwritten;
 choose a new `--output-dir` for a rerun. Use its `runs.json` with the verification
-and paper-building commands. Figure generation requires all G0-G4 results.
+and artifact-generation commands. Figure generation requires all G0-G4 results.
+
+For results saved outside the default output directory:
+
+```sh
+python scripts/verify_results.py --index outputs/rerun/runs.json
+python scripts/build_artifacts.py --index outputs/rerun/runs.json --output-dir exports/paper
+```
+
+`build_artifacts.py` generates tables, Excel workbooks and PDF/PNG figures from
+completed results. It does not generate manuscript text. The export directory
+must be empty and its final path component must be `paper`.
 
 Tests:
 
@@ -115,17 +125,18 @@ python -m unittest discover -s tests -v
 
 - `code/src/`: model, data splits, attacks, proposed method, baselines, metrics,
   audit chains, and exports; `code/config.py`: seeds and hyperparameters.
-- `configs/G0.json` ... `G4.json`: group overrides using unchanged defaults.
+- `configs/G0.json` ... `G4.json`: experiment-group configurations.
 - `code/data/dataset20000/`: fixed experiment subset; `LICENSE-DATA.md`: source,
   sampling provenance and dataset-specific license.
-- `scripts/`: dataset preparation, indexed execution, verification, paper export.
-- `reference/`: supplied tables, workbooks, original PNGs and edited PDFs.
+- `scripts/`: dataset preparation, experiment execution, verification and artifact export.
+- `reference/`: numerical reference tables/workbooks and code-generated PDF/PNG figures.
 - `outputs/<group>/runs/<run>/`: configuration, logs, audit chains, models,
   workbook and diagnostic figures; `outputs/runs.json`: selected run index.
 - `paper/{tables,excel,figures}/`: newly generated tables, workbooks, PDF/PNG figures.
 - [Reproducibility notes](docs/reproducibility.md): protocol, metric definitions,
-  expected row counts, reference distinctions and known limitations.
+  expected row counts, figure mapping and execution constraints.
 
-The public package excludes manuscript drafting and thesis-report materials.
-See the reproducibility notes before interpreting inherited figure annotations.
-Code licensing and the final paper citation remain pending author review.
+## License
+
+Dataset terms are provided in `LICENSE-DATA.md`. No source-code license has
+been specified.

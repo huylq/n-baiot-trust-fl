@@ -1,9 +1,4 @@
-"""Assemble the paper/ package from the official, audited experiment runs.
-
-Deterministic and re-runnable: reads only official run artifacts, writes
-paper/tables (CSV), paper/figures (PNG), paper/excel (workbook copies) and a
-provenance README. Numbers come straight from run artifacts — never retyped.
-"""
+"""Export CSV tables, Excel workbooks and an input-run index from experiment results."""
 from __future__ import annotations
 
 import json
@@ -208,7 +203,7 @@ def main() -> None:
         "# Experiment tables and figures",
         "",
         "Generated from the run artifacts listed below.",
-        "Tables retain the original aggregation and metric definitions.",
+        "Tables summarize per-seed metrics from completed experiments.",
         "Figure scripts write PDF and PNG versions.",
         "See the repository's docs/reproducibility.md for known limitations.",
         "",

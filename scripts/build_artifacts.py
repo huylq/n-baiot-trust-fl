@@ -1,4 +1,4 @@
-"""Route the original table and figure builders to a completed result index."""
+"""Generate tables, workbooks and figures from completed experiment results."""
 from __future__ import annotations
 
 import argparse
@@ -36,7 +36,7 @@ def main() -> None:
             parser.error(f"{group} runtime configuration disagrees with the index.")
     output = args.output_dir.resolve()
     if output.name != "paper":
-        parser.error("--output-dir must end in 'paper' (the original figure builder's table layout).")
+        parser.error("--output-dir must end in 'paper' (required table and figure directory layout).")
     if output.exists() and any(output.iterdir()):
         parser.error("Use an empty output directory; reference artifacts will not be overwritten.")
     package = load_module("paper_package", ROOT / "code" / "build_paper_package.py")
@@ -60,8 +60,7 @@ def main() -> None:
     for name in ("fig1_rho_boundary", "fig2_main_comparison", "fig3_trust_trajectories",
                  "fig4_attribution_rounds", "fig5_g0_diagnostics", "fig6_ablation", "fig7_malicious_count"):
         getattr(figures, name)()
-    print("WARNING: inherited figure annotations have known limitations; see docs/reproducibility.md.")
-    print(f"[PAPER] {output}")
+    print(f"[ARTIFACTS] {output}")
 
 
 if __name__ == "__main__":
