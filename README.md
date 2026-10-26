@@ -121,6 +121,48 @@ cd ..
 python -m unittest discover -s tests -v
 ```
 
+## Confusion matrices and class-wise metrics
+
+Final-test classification results underlying manuscript Tables 4-5 are available
+in [`reference/confusion_matrices/`](reference/confusion_matrices/):
+
+- [`confusion_matrices.csv`](reference/confusion_matrices/confusion_matrices.csv):
+  75 matrices identified by configuration, seed and device.
+- [`classwise_metrics.csv`](reference/confusion_matrices/classwise_metrics.csv):
+  150 rows with benign/malicious precision, recall, F1 and support.
+- [`summary.csv`](reference/confusion_matrices/summary.csv): seven configuration
+  summaries with means and sample standard deviations over five seeds.
+
+Table 4 covers centralized, local-only, clean FedAvg (`S1`) and the clean proposed
+method (`S1_trust`). Table 5 covers the proposed method (`S4`) with one, two or
+three attackers and label-flipping probability 1.0. Seeds are 0-4. Centralized,
+FedAvg and proposed models each have one matrix per configuration and seed.
+Local-only has nine device matrices per seed, giving 45 of the 75 matrices.
+
+Matrix rows are true labels and columns are predictions, ordered `benign,
+malicious`. With malicious as the positive class, the matrix is
+`[[TN, FP], [FN, TP]]`. Metrics use scale 0-1; multiply by 100 for percentages.
+For local-only summaries, device metrics are averaged within each seed before
+calculating means and sample standard deviations over seeds. F1 computed from
+summed device matrices is not substituted for that average. Accuracy and
+macro-F1 differ before rounding, but their means and standard deviations
+coincide at the three-decimal percentage precision used in Tables 4-5.
+
+Regenerate these files with the included dataset and existing experiment code:
+
+```sh
+python scripts/export_confusion_matrices.py
+```
+
+The script reruns only the configurations in Tables 4-5, using 50 federated
+rounds and 20 epochs for centralized/local-only models. It exports the final-test
+confusion matrices and checks the recomputed per-seed metrics against
+`reference/tables/all_seed_runs.csv` with
+absolute tolerance 1e-12. Exports, audit logs and scalers are saved separately
+under `outputs/confusion_matrices/`. Existing output directories are refused;
+use `--output-dir PATH` for a rerun. `--data-dir PATH` selects another verified
+copy of the dataset. No previously saved models are required.
+
 ## Files and outputs
 
 - `code/src/`: model, data splits, attacks, proposed method, baselines, metrics,
@@ -128,8 +170,11 @@ python -m unittest discover -s tests -v
 - `configs/G0.json` ... `G4.json`: experiment-group configurations.
 - `code/data/dataset20000/`: fixed experiment subset; `LICENSE-DATA.md`: source,
   sampling provenance and dataset-specific license.
-- `scripts/`: dataset preparation, experiment execution, verification and artifact export.
+- `scripts/`: dataset preparation, experiment execution, verification and artifact export,
+  including the Table 4-5 confusion-matrix exporter.
 - `reference/`: numerical reference tables/workbooks and code-generated PDF/PNG figures.
+- `reference/confusion_matrices/`: per-run confusion matrices, class-wise metrics
+  and configuration summaries for manuscript Tables 4-5.
 - `outputs/<group>/runs/<run>/`: configuration, logs, audit chains, models,
   workbook and diagnostic figures; `outputs/runs.json`: selected run index.
 - `paper/{tables,excel,figures}/`: newly generated tables, workbooks, PDF/PNG figures.
