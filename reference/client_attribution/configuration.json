@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "group": "G3",
+  "scenario": "S4",
+  "mode": "trust",
+  "task": "binary",
+  "rho": 1.0,
+  "attacker_counts": [
+    1,
+    2,
+    3
+  ],
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "rounds": 50,
+  "devices": [
+    "Danmini_Doorbell",
+    "Ecobee_Thermostat",
+    "Ennio_Doorbell",
+    "Philips_B120N10_Baby_Monitor",
+    "Provision_PT_737E_Security_Camera",
+    "Provision_PT_838_Security_Camera",
+    "Samsung_SNH_1011_N_Webcam",
+    "SimpleHome_XCS7_1002_WHT_Security_Camera",
+    "SimpleHome_XCS7_1003_WHT_Security_Camera"
+  ],
+  "malicious_clients_by_count": {
+    "1": [
+      "Provision_PT_838_Security_Camera"
+    ],
+    "2": [
+      "Provision_PT_838_Security_Camera",
+      "SimpleHome_XCS7_1003_WHT_Security_Camera"
+    ],
+    "3": [
+      "Provision_PT_838_Security_Camera",
+      "SimpleHome_XCS7_1003_WHT_Security_Camera",
+      "Ennio_Doorbell"
+    ]
+  },
+  "split": {
+    "train": 0.7,
+    "val": 0.15,
+    "test": 0.15
+  },
+  "model": {
+    "learning_rate": 0.01,
+    "batch_size": 64,
+    "l2": 0.0,
+    "centralized_epochs": 20,
+    "local_epochs": 20,
+    "federated_rounds": 50,
+    "federated_local_epochs": 1
+  },
+  "security": {
+    "reference": "median",
+    "use_self_reported_loss": false,
+    "use_memory": true,
+    "beta": 0.8,
+    "window_W": 5,
+    "strike_W_neg": 3,
+    "cos_margin": 0.1,
+    "norm_z_soft": 2.0,
+    "norm_z_strike": 3.5,
+    "norm_z_admission": 4.5,
+    "log_norm_mad_floor": 0.05,
+    "tau_rel": 0.5,
+    "tau_abs": 0.05,
+    "clip_multiplier": 2.0,
+    "warmup_rounds": 5,
+    "eps": 1e-06,
+    "eps_w": 0.1,
+    "T_init": 0.5,
+    "min_client_train_samples": 500
+  },
+  "dataset": "code/data/dataset20000",
+  "source": "Archived G3 reproduction logs matching the supplied per-seed paper reference.",
+  "source_run_id": "run_20260911_054615"
+}

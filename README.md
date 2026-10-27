@@ -163,6 +163,79 @@ under `outputs/confusion_matrices/`. Existing output directories are refused;
 use `--output-dir PATH` for a rerun. `--data-dir PATH` selects another verified
 copy of the dataset. No previously saved models are required.
 
+## Client attribution evidence
+
+Attribution evidence for manuscript Table 5 is available in
+[`reference/client_attribution/`](reference/client_attribution/). It covers S4
+with one, two or three attackers, label-flipping probability 1.0, seeds 0-4,
+and 50 rounds:
+
+- [`audit/`](reference/client_attribution/audit/): 15 archived G3 experiment logs,
+  preserved byte-for-byte, with SHA-256 hashes in
+  [`audit_manifest.csv`](reference/client_attribution/audit_manifest.csv).
+- [`configuration.json`](reference/client_attribution/configuration.json):
+  device identities, nested attacker sets, training parameters and security rules.
+- [`client_round_traces.csv`](reference/client_attribution/client_round_traces.csv):
+  6,750 client-round records with ground truth, cosine, norm z-score, violations,
+  strikes and flags.
+- [`per_seed_summary.csv`](reference/client_attribution/per_seed_summary.csv):
+  15 rows with cumulative TP/FP/FN/TN, precision and recall through rounds 10 and
+  50, mean time to detection, and final cumulative Flag FPR.
+- [`summary.csv`](reference/client_attribution/summary.csv): means and sample
+  standard deviations across the five seeds for each attacker count.
+- [`false_positive_events.csv`](reference/client_attribution/false_positive_events.csv):
+  five client-seed cases, listing the first false flag, violation rounds within
+  its five-round window, and all flagged rounds.
+- [`figures/`](reference/client_attribution/figures/): PDF/PNG plots for all three
+  attacker counts. Upper panels show cosine means and min-max ranges across
+  clients and seeds. Gray shading denotes warm-up and the dashed line is the
+  cosine violation threshold. Lower panels show the fraction of seeds flagged
+  for each client and round. Asterisks mark attackers.
+
+After five warm-up rounds, a violation is recorded when cosine is below -0.1
+or the robust log-norm z-score exceeds 3.5. At least three violations within
+a five-round window trigger a flag. The three violations need not be consecutive.
+Flags can clear when older violations leave the window. Ground truth is used
+to score attribution, not to make detection decisions.
+
+Every attacker is first flagged at round 8 in all 15 runs. With two attackers,
+no benign client is flagged over 50 rounds. With one attacker, SimpleHome 1002
+is falsely flagged in seeds 0 and 1, first at rounds 17 and 14. With three
+attackers, Samsung and Ecobee are falsely flagged in seed 2, first at rounds 42
+and 45, and Samsung in seed 3 at round 43. These false flags follow benign cosine
+violations, with no norm violations in their triggering windows. Consequently,
+mean cumulative precision is 0.80, 1.00 and 0.87 for one, two and three attackers.
+
+Counts through a horizon are based on the union of distinct clients ever
+flagged through that round. A later flag removal does not remove that client
+from cumulative counts. Thus, cumulative recall 1.0 does not mean every attacker
+remains flagged at every round. Flag FPR is the fraction of distinct benign
+clients ever flagged, not the fraction of client-round decisions. All false
+flags occur after round 10, so detection-window precision remains 1.0.
+The two-attacker cases in Fig. 1 and Table 5 use the same protocol and seeds
+and should not be treated as independent replications.
+
+Recreate the CSV files and figures from the included archived logs:
+
+```sh
+python scripts/export_client_attribution.py
+```
+
+This command does not train models. It verifies the archived file hashes and
+audit hash chains, recomputes norm z-scores and all 6,750 strike/flag decisions,
+and compares the per-seed attribution metrics with the supplied reference
+tables. A verification report and regenerated artifacts are written under
+`outputs/client_attribution/`. Existing output directories are refused. Use
+`--output-dir PATH` to select a new destination. `--audit-dir PATH` accepts a
+directory containing the same 15 log filenames from a rerun and applies the
+same chain, decision and metric checks. Archived-file manifest checks apply
+only to the included audit directory.
+
+The archived logs reproduce the supplied Table 5 attribution metrics. Cosine
+values are read from the logs because raw update vectors are not included.
+Full experiment reproduction remains available via
+`scripts/run_grid.py --groups G3`.
+
 ## Files and outputs
 
 - `code/src/`: model, data splits, attacks, proposed method, baselines, metrics,
@@ -175,6 +248,8 @@ copy of the dataset. No previously saved models are required.
 - `reference/`: numerical reference tables/workbooks and code-generated PDF/PNG figures.
 - `reference/confusion_matrices/`: per-run confusion matrices, class-wise metrics
   and configuration summaries for manuscript Tables 4-5.
+- `reference/client_attribution/`: archived logs, attribution traces, per-seed
+  counts and supporting figures for manuscript Table 5.
 - `outputs/<group>/runs/<run>/`: configuration, logs, audit chains, models,
   workbook and diagnostic figures; `outputs/runs.json`: selected run index.
 - `paper/{tables,excel,figures}/`: newly generated tables, workbooks, PDF/PNG figures.

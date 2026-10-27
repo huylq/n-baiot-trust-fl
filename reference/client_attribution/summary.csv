@@ -1,0 +1,4 @@
+m,seed_count,precision_10_mean,precision_10_std,recall_10_mean,recall_10_std,precision_50_mean,precision_50_std,recall_50_mean,recall_50_std,flag_fpr_mean,flag_fpr_std,mean_ttd_mean,mean_ttd_std
+1,5,1.0,0.0,1.0,0.0,0.8,0.27386127875258304,1.0,0.0,0.05,0.06846531968814576,8,0.0
+2,5,1.0,0.0,1.0,0.0,1.0,0.0,1.0,0.0,0.0,0.0,8,0.0
+3,5,1.0,0.0,1.0,0.0,0.87,0.1857417562100671,1.0,0.0,0.09999999999999999,0.14907119849998599,8,0.0
