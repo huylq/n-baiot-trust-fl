@@ -1,0 +1,6 @@
+seed,device,first_flag_round,cosine_violation_rounds,norm_violation_rounds,min_window_cosine,max_window_norm_z
+0,Samsung_SNH_1011_N_Webcam,8,,6;7;8,0.5442510661141989,8.549782910922595
+0,SimpleHome_XCS7_1002_WHT_Security_Camera,42,,40;41;42,-0.026540613012286017,4.162870130733118
+1,SimpleHome_XCS7_1002_WHT_Security_Camera,10,,8;9;10,0.009137270299791434,6.249119839723257
+2,Samsung_SNH_1011_N_Webcam,8,,6;7;8,0.5896808329131498,11.014687539343816
+3,SimpleHome_XCS7_1002_WHT_Security_Camera,14,,11;12;14,-0.04556535744937048,3.6991524716255264

@@ -1,0 +1,152 @@
+{
+  "schema_version": 2,
+  "project_name": "NBaIoT_FL_9Device_Poisoning",
+  "random_seed": 42,
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "task": "binary",
+  "paths": {
+    "audit_dir": "audit",
+    "models_dir": "models"
+  },
+  "devices": [
+    "Danmini_Doorbell",
+    "Ecobee_Thermostat",
+    "Ennio_Doorbell",
+    "Philips_B120N10_Baby_Monitor",
+    "Provision_PT_737E_Security_Camera",
+    "Provision_PT_838_Security_Camera",
+    "Samsung_SNH_1011_N_Webcam",
+    "SimpleHome_XCS7_1002_WHT_Security_Camera",
+    "SimpleHome_XCS7_1003_WHT_Security_Camera"
+  ],
+  "labels": [
+    "benign",
+    "gafgyt_scan",
+    "gafgyt_tcp",
+    "gafgyt_udp",
+    "gafgyt_combo",
+    "gafgyt_junk",
+    "mirai_ack",
+    "mirai_scan",
+    "mirai_syn",
+    "mirai_udp",
+    "mirai_udpplain"
+  ],
+  "tasks": {
+    "binary": {
+      "enabled": true,
+      "class_names": [
+        "benign",
+        "malicious"
+      ]
+    },
+    "multiclass": {
+      "enabled": false,
+      "class_names": [
+        "benign",
+        "gafgyt_scan",
+        "gafgyt_tcp",
+        "gafgyt_udp",
+        "gafgyt_combo",
+        "gafgyt_junk",
+        "mirai_ack",
+        "mirai_scan",
+        "mirai_syn",
+        "mirai_udp",
+        "mirai_udpplain"
+      ]
+    }
+  },
+  "split": {
+    "train": 0.7,
+    "val": 0.15,
+    "test": 0.15
+  },
+  "model": {
+    "learning_rate": 0.01,
+    "batch_size": 64,
+    "l2": 0.0,
+    "centralized_epochs": 20,
+    "local_epochs": 20,
+    "federated_rounds": 50,
+    "federated_local_epochs": 1,
+    "architecture": "mlp",
+    "hidden_units": 32
+  },
+  "attack": {
+    "enabled": false,
+    "type": "label_flip",
+    "rho": 1.0,
+    "rho_values": [
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.7,
+      1.0
+    ],
+    "malicious_clients": [
+      5,
+      8,
+      2
+    ]
+  },
+  "security": {
+    "reference": "median",
+    "use_self_reported_loss": false,
+    "use_memory": true,
+    "beta": 0.8,
+    "window_W": 5,
+    "strike_W_neg": 3,
+    "cos_margin": 0.1,
+    "norm_z_soft": 2.0,
+    "norm_z_strike": 3.5,
+    "norm_z_admission": 4.5,
+    "log_norm_mad_floor": 0.05,
+    "tau_rel": 0.5,
+    "tau_abs": 0.05,
+    "clip_multiplier": 2.0,
+    "warmup_rounds": 5,
+    "eps": 1e-06,
+    "eps_w": 0.1,
+    "T_init": 0.5,
+    "min_client_train_samples": 500
+  },
+  "defense": {
+    "byzantine_f": null,
+    "multikrum_m": null,
+    "trim_k": null,
+    "clip_to_median_multiplier": 1.0,
+    "fltrust_root_size": 200
+  },
+  "export": {
+    "write_models": true,
+    "write_figures": false,
+    "write_excel": false
+  },
+  "effective_attack": {
+    "enabled": true,
+    "type": "label_flip",
+    "rho": 0.2,
+    "rho_values": [
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.7,
+      1.0
+    ],
+    "malicious_clients": [
+      5,
+      8,
+      2
+    ]
+  },
+  "seed": 4
+}

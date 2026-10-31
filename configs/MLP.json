@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "model": "MLP",
+  "layers": [
+    115,
+    32,
+    2
+  ],
+  "hidden_activation": "ReLU",
+  "output_activation": "softmax",
+  "parameter_count": 3778,
+  "dtype": "float64",
+  "initialization": "W1 normal std sqrt(2/115), W2 normal std sqrt(1/32), zero biases",
+  "training": {
+    "learning_rate": 0.01,
+    "batch_size": 64,
+    "l2": 0.0,
+    "centralized_epochs": 20,
+    "local_epochs": 20,
+    "federated_rounds": 50,
+    "federated_local_epochs": 1
+  },
+  "security": {
+    "reference": "median",
+    "use_self_reported_loss": false,
+    "use_memory": true,
+    "beta": 0.8,
+    "window_W": 5,
+    "strike_W_neg": 3,
+    "cos_margin": 0.1,
+    "norm_z_soft": 2.0,
+    "norm_z_strike": 3.5,
+    "norm_z_admission": 4.5,
+    "log_norm_mad_floor": 0.05,
+    "tau_rel": 0.5,
+    "tau_abs": 0.05,
+    "clip_multiplier": 2.0,
+    "warmup_rounds": 5,
+    "eps": 1e-06,
+    "eps_w": 0.1,
+    "T_init": 0.5,
+    "min_client_train_samples": 500
+  },
+  "defense": {
+    "byzantine_f": null,
+    "multikrum_m": null,
+    "trim_k": null,
+    "clip_to_median_multiplier": 1.0,
+    "fltrust_root_size": 200
+  },
+  "split": {
+    "train": 0.7,
+    "val": 0.15,
+    "test": 0.15
+  },
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "rounds": 50,
+  "clients": [
+    "Danmini_Doorbell",
+    "Ecobee_Thermostat",
+    "Ennio_Doorbell",
+    "Philips_B120N10_Baby_Monitor",
+    "Provision_PT_737E_Security_Camera",
+    "Provision_PT_838_Security_Camera",
+    "Samsung_SNH_1011_N_Webcam",
+    "SimpleHome_XCS7_1002_WHT_Security_Camera",
+    "SimpleHome_XCS7_1003_WHT_Security_Camera"
+  ],
+  "attacker_indices": [
+    5,
+    8,
+    2
+  ],
+  "grid": [
+    {
+      "case": "clean_fedavg",
+      "scenario": "S1",
+      "method": "FedAvg",
+      "mode": "fedavg",
+      "rho": null
+    },
+    {
+      "case": "clean_s4",
+      "scenario": "S1_trust",
+      "method": "S4",
+      "mode": "trust",
+      "rho": null
+    },
+    {
+      "case": "rho0p2_fedavg",
+      "scenario": "S2",
+      "method": "FedAvg",
+      "mode": "fedavg",
+      "rho": 0.2
+    },
+    {
+      "case": "rho0p2_clipped_mean",
+      "scenario": "B_cmean",
+      "method": "Clipped mean",
+      "mode": "clipped_mean",
+      "rho": 0.2
+    },
+    {
+      "case": "rho0p2_s4",
+      "scenario": "S4",
+      "method": "S4",
+      "mode": "trust",
+      "rho": 0.2
+    },
+    {
+      "case": "rho1p0_fedavg",
+      "scenario": "S2",
+      "method": "FedAvg",
+      "mode": "fedavg",
+      "rho": 1.0
+    },
+    {
+      "case": "rho1p0_clipped_mean",
+      "scenario": "B_cmean",
+      "method": "Clipped mean",
+      "mode": "clipped_mean",
+      "rho": 1.0
+    },
+    {
+      "case": "rho1p0_s4",
+      "scenario": "S4",
+      "method": "S4",
+      "mode": "trust",
+      "rho": 1.0
+    }
+  ],
+  "planned_federated_runs": 40,
+  "dataset_manifest_sha256": "97bf84c0762c5a2baf8df7204e06ef26b638f7d93c6897f5f2a21bcb37de77ec",
+  "parameter_selection": "Architecture, optimizer, grid and security parameters fixed before training. No test-driven tuning."
+}

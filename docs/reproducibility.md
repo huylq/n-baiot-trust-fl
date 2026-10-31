@@ -13,7 +13,7 @@ under CC BY 4.0; attribution and sampling provenance are in `LICENSE-DATA.md`.
 Each experiment seed (0, 1, 2, 3, 4) defines stratified per-device 70/15/15
 train/validation/test splits. Pooled feature scaling uses training data only.
 Label flipping affects training labels of configured attackers only. Ecobee
-remains honest. Training uses a two-class softmax model, learning rate 0.01,
+remains honest. The primary experiments use a two-class softmax model, learning rate 0.01,
 batch size 64, no L2 penalty, 50 federated rounds and one local epoch per round.
 Centralized and local-only baselines use 20 epochs. All remaining parameters
 are defined in `code/config.py`; group selection is in `configs/G0.json` through
@@ -29,6 +29,62 @@ are defined in `code/config.py`; group selection is in `configs/G0.json` through
 
 The complete grid has 240 per-seed result rows, including repeated configurations
 across groups. These are not 240 independent experimental conditions.
+
+## Additional nonlinear evaluation
+
+`configs/MLP.json` defines an additional 40 federated runs: eight configurations
+over seeds 0-4. The architecture is 115 inputs, 32 ReLU hidden units and two
+softmax outputs, using float64 parameters. Initialization draws the first-layer
+weights from a normal distribution with standard deviation sqrt(2/115), the
+second-layer weights with standard deviation sqrt(1/32), and sets biases to zero.
+The packed checkpoint stores 3,744 weights (W1 then W2, flattened in row-major
+order) and 34 biases (hidden then output). The same initialization and local
+mini-batch schedules are used by all methods within each architecture and seed.
+
+The data and SGD settings match the primary experiments, including one local
+epoch per round. S4 uses the same security parameters without model-specific
+tuning. Clean FedAvg and S4 are evaluated, followed by FedAvg, clipped mean and
+S4 with Provision PT-838, SimpleHome 1003 and Ennio as attackers at probabilities
+0.2 and 1.0. The added architecture checks model dependence on the same dataset;
+it does not establish generalization to harder datasets or other architectures.
+
+`reference/mlp/` contains the Table 6 reference values and all 40 run records.
+Each run has its own model directory, avoiding checkpoint collisions between
+configurations. `splits_and_scalers/seedN.npz` stores feature names, means and
+standard deviations. Split indices are regenerated deterministically from the
+included dataset and seed. Audit logs and checkpoint/prediction archives preserve
+their original bytes. Runtime metadata uses relative paths. The byte manifest
+covers every reference file except the manifest itself. `source_manifest.csv`
+identifies the public model, runner, export and verification code shipped with
+the archive; it is a release manifest, not a claim that those packaged scripts
+had their current paths when the experiments were performed.
+
+`scripts/run_mlp.py` trains into a fresh `outputs/mlp/` directory. The optional
+seed, round and case selections are for partial checks. Only the complete
+eight-case, five-seed, 50-round grid reproduces Table 6. A single-seed summary
+has undefined sample standard deviations. Partial runs without clean FedAvg
+have undefined differences from that baseline.
+
+`scripts/export_mlp_results.py` recomputes classification from saved predictions
+and attribution from audit logs. It validates supplied per-run and summary
+metrics and writes separate CSV exports, including client-round traces.
+`scripts/verify_mlp.py` additionally reconstructs test sets and standardization,
+evaluates checkpoints using an independent forward calculation, compares the
+archived derived tables and validates hashes. This is numerical and internal
+consistency evidence, not proof of attribution correctness. Neither command
+trains a model. For a new run, the verifier checks its internally recomputed
+metrics. Add `--compare-reference` to compare a complete rerun with the supplied
+Table 6 per-seed and summary values using absolute tolerance 1e-12. Other BLAS implementations
+may produce different floating-point trajectories, especially near thresholds.
+
+The complete archive has 40 confusion matrices, 80 class-wise metric rows,
+30 attribution-count rows (15 S4 runs at two horizons), five clean false-flag
+client-seed cases, and 100 history rows for the two missed attackers. Exported
+S4 client-round traces have 6,750 rows. Traffic classification matrices and
+client-attribution counts describe different tasks. All means and sample
+standard deviations aggregate seeds; cumulative ratios are computed within
+each seed before averaging. The primary 230 federated runs and these 40 MLP
+runs have 270 audit chains in total.
 
 ## Reference and comparison
 
@@ -78,7 +134,7 @@ documented experiment grid; check them when changing the configuration.
   Full-run cumulative precision can therefore differ from detection-window precision.
 - S3 can reject all updates after warm-up and retain the preceding model. Its
   high clean-test accuracy does not establish successful continued learning.
-- The model writer names checkpoints by scenario and seed, without
+- In the primary G0-G4 runner, the model writer names checkpoints by scenario and seed, without
   rho or attacker count. G2/G3 consequently overwrite earlier checkpoints
   within a run. Per-configuration metrics and audit chains remain distinct.
   Use logs/workbooks for the full grid,

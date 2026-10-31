@@ -1,0 +1,10 @@
+{
+  "accuracy_and_f1": "Stored on scale 0-1. Summary standard deviations use ddof=1 over five seeds.",
+  "attribution": "Strike-based client flags, separate from traffic classification and temporary suppression.",
+  "cumulative": "Each distinct client ever flagged through round 50 counts once. Clearing a later flag does not remove prior cumulative detection.",
+  "flag_fpr": "Distinct benign clients ever flagged divided by the number of benign clients. It is not a traffic-classification FPR.",
+  "mean_ttd": "Mean first-flag round among detected attackers only. Interpret with recall because undetected attackers are not assigned a finite TTD.",
+  "clean_runs": "Attacker precision, recall and residual malicious weight are not applicable. Honest flag and suppression rates remain defined for S4.",
+  "aggregation_baselines": "FedAvg and clipped mean have no client-attribution detector in this implementation. Attribution fields are not applicable.",
+  "scope": "One 115-32-2 ReLU MLP. Original S4 hyperparameters retained without model-specific retuning. Attacked configurations use three fixed attackers."
+}

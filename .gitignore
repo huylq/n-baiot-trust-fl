@@ -30,6 +30,10 @@ code/paper_generators/
 tmp/
 .dist/
 *.npz
+!/reference/mlp/runs/**/models/*.npz
+!/reference/mlp/runs/**/predictions.npz
+!/reference/mlp/splits_and_scalers/*.npz
+!/reference/mlp/runs/**/audit/
 *.log
 
 # Local settings and credentials

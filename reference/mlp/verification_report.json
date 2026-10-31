@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "verified_predictions": 1080000,
+  "verified_audit_chains": 40,
+  "recomputed_s4_client_round_decisions": 6750,
+  "verified_seed_rows": 40,
+  "verified_summary_rows": 8,
+  "absolute_tolerance": 1e-12,
+  "matched_table6_reference": true,
+  "verified_final_models": 40,
+  "parameter_count": 3778,
+  "verified_manifest_files": 216
+}

@@ -1,0 +1,41 @@
+case,method,seed,rho,malicious_count,tn,fp,fn,tp
+clean_fedavg,FedAvg,0,,0,13456,44,13,13487
+clean_s4,S4,0,,0,13362,138,12,13488
+rho0p2_fedavg,FedAvg,0,0.2,3,13452,48,20,13480
+rho0p2_clipped_mean,Clipped mean,0,0.2,3,13450,50,17,13483
+rho0p2_s4,S4,0,0.2,3,13421,79,12,13488
+rho1p0_fedavg,FedAvg,0,1.0,3,12884,616,46,13454
+rho1p0_clipped_mean,Clipped mean,0,1.0,3,13447,53,14,13486
+rho1p0_s4,S4,0,1.0,3,13431,69,12,13488
+clean_fedavg,FedAvg,1,,0,13470,30,16,13484
+clean_s4,S4,1,,0,13403,97,16,13484
+rho0p2_fedavg,FedAvg,1,0.2,3,13459,41,19,13481
+rho0p2_clipped_mean,Clipped mean,1,0.2,3,13452,48,22,13478
+rho0p2_s4,S4,1,0.2,3,13453,47,17,13483
+rho1p0_fedavg,FedAvg,1,1.0,3,12911,589,179,13321
+rho1p0_clipped_mean,Clipped mean,1,1.0,3,13451,49,21,13479
+rho1p0_s4,S4,1,1.0,3,13447,53,16,13484
+clean_fedavg,FedAvg,2,,0,13461,39,16,13484
+clean_s4,S4,2,,0,13442,58,16,13484
+rho0p2_fedavg,FedAvg,2,0.2,3,13453,47,30,13470
+rho0p2_clipped_mean,Clipped mean,2,0.2,3,13452,48,34,13466
+rho0p2_s4,S4,2,0.2,3,13448,52,16,13484
+rho1p0_fedavg,FedAvg,2,1.0,3,12915,585,78,13422
+rho1p0_clipped_mean,Clipped mean,2,1.0,3,13450,50,17,13483
+rho1p0_s4,S4,2,1.0,3,13441,59,15,13485
+clean_fedavg,FedAvg,3,,0,13463,37,15,13485
+clean_s4,S4,3,,0,13412,88,16,13484
+rho0p2_fedavg,FedAvg,3,0.2,3,13454,46,22,13478
+rho0p2_clipped_mean,Clipped mean,3,0.2,3,13455,45,24,13476
+rho0p2_s4,S4,3,0.2,3,13451,49,14,13486
+rho1p0_fedavg,FedAvg,3,1.0,3,12922,578,96,13404
+rho1p0_clipped_mean,Clipped mean,3,1.0,3,13454,46,18,13482
+rho1p0_s4,S4,3,1.0,3,13452,48,14,13486
+clean_fedavg,FedAvg,4,,0,13463,37,17,13483
+clean_s4,S4,4,,0,13458,42,13,13487
+rho0p2_fedavg,FedAvg,4,0.2,3,13451,49,28,13472
+rho0p2_clipped_mean,Clipped mean,4,0.2,3,13453,47,26,13474
+rho0p2_s4,S4,4,0.2,3,13455,45,16,13484
+rho1p0_fedavg,FedAvg,4,1.0,3,12903,597,186,13314
+rho1p0_clipped_mean,Clipped mean,4,1.0,3,13454,46,19,13481
+rho1p0_s4,S4,4,1.0,3,13455,45,16,13484

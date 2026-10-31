@@ -22,6 +22,7 @@ from .aggregators import (
 from .data_loader import DataRepository, DeviceSplits
 from .evaluation import attach_confusion_matrix, attribution_metrics, compute_metrics
 from .model import SoftmaxRegressor
+from .mlp import MLPClassifier
 from .security import (
     AuditChain,
     ClientSecurityRecord,
@@ -85,6 +86,15 @@ class ExperimentRunner:
         self.repo = repo
         self.model_cfg = config["model"]
         self.seed = int(config["random_seed"] if seed is None else seed)
+
+    def _new_model(self, n_features, n_classes, seed):
+        architecture = self.model_cfg.get("architecture", "softmax")
+        if architecture == "mlp":
+            return MLPClassifier(n_features, n_classes, seed=seed,
+                                 hidden_units=int(self.model_cfg.get("hidden_units", 32)))
+        if architecture != "softmax":
+            raise ValueError(f"Unknown model architecture: {architecture}")
+        return SoftmaxRegressor(n_features, n_classes, seed=seed)
 
     def run_all(self) -> dict:
         """Run the clean S1 modes for each enabled task."""
@@ -182,7 +192,7 @@ class ExperimentRunner:
         train_df = pd.concat([splits[device].train for device in self.repo.devices], ignore_index=True)
         test_df = pd.concat([splits[device].test for device in self.repo.devices], ignore_index=True)
         x_train, y_train = self._task_data(train_df, task_name, mean, std)
-        model = SoftmaxRegressor(len(self.repo.feature_columns), n_classes, seed=self.seed)
+        model = self._new_model(len(self.repo.feature_columns), n_classes, seed=self.seed)
         model.fit(
             x_train, y_train,
             epochs=self.model_cfg["centralized_epochs"],
@@ -207,7 +217,7 @@ class ExperimentRunner:
         for client_index, device in enumerate(self.repo.devices):
             device_splits = splits[device]
             x_train, y_train = self._task_data(device_splits.train, task_name, mean, std)
-            model = SoftmaxRegressor(len(self.repo.feature_columns), n_classes, seed=self.seed)
+            model = self._new_model(len(self.repo.feature_columns), n_classes, seed=self.seed)
             model.fit(
                 x_train, y_train,
                 epochs=self.model_cfg["local_epochs"],
@@ -231,7 +241,7 @@ class ExperimentRunner:
         rows = []
         for client_index, source in enumerate(self.repo.devices):
             x_train, y_train = self._task_data(splits[source].train, task_name, mean, std)
-            model = SoftmaxRegressor(len(self.repo.feature_columns), n_classes, seed=self.seed)
+            model = self._new_model(len(self.repo.feature_columns), n_classes, seed=self.seed)
             model.fit(
                 x_train, y_train,
                 epochs=self.model_cfg["local_epochs"],
@@ -291,8 +301,8 @@ class ExperimentRunner:
             f"malicious={len(malicious_devices)}"
         )
 
-        global_model = SoftmaxRegressor(len(self.repo.feature_columns), n_classes, seed=self.seed)
-        if task_name == "binary" and len(self.repo.feature_columns) == 115:
+        global_model = self._new_model(len(self.repo.feature_columns), n_classes, seed=self.seed)
+        if isinstance(global_model, SoftmaxRegressor) and task_name == "binary" and len(self.repo.feature_columns) == 115:
             delta_size = global_model.weights.size + global_model.bias.size
             if delta_size != 232:
                 raise AssertionError(f"Binary softmax update must be 232-dimensional, got {delta_size}")

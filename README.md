@@ -2,7 +2,8 @@
 
 Research code for nine-device federated learning under label-flip attacks.
 The experiments compare trust-based aggregation, robust aggregation baselines,
-attacker attribution, and clean-data performance across groups G0-G4.
+attacker attribution, and clean-data performance across the primary softmax
+groups G0-G4 and an additional fixed-protocol MLP evaluation.
 
 ## Installation
 
@@ -163,6 +164,81 @@ under `outputs/confusion_matrices/`. Existing output directories are refused;
 use `--output-dir PATH` for a rerun. `--data-dir PATH` selects another verified
 copy of the dataset. No previously saved models are required.
 
+## Additional MLP evaluation
+
+The nonlinear evaluation uses a 115-input, 32-unit ReLU hidden layer and two
+softmax outputs (3,778 parameters). It retains the primary data splits, pooled
+training-only standardization, SGD settings and security parameters without
+model-specific tuning. The fixed protocol is in [`configs/MLP.json`](configs/MLP.json).
+Five seeds and 50 rounds are used for each of eight configurations:
+
+- Clean FedAvg and S4.
+- FedAvg, norm-clipped mean and S4 with three fixed attackers at each of
+  label-flipping probabilities 0.2 and 1.0.
+
+The 40-run results underlying manuscript Table 6 are in
+[`reference/mlp/`](reference/mlp/). They include per-seed metrics, summary means
+and sample standard deviations, 40 final-test confusion matrices, 80 class-wise
+metric rows, and attribution counts through rounds 10 and 50. The directory
+also contains all 40 final checkpoints, saved test predictions, original audit
+chains, per-run configurations and the five training-data scalers. Archived
+runtime paths are relative to each run directory. The data are unchanged from
+the primary experiments. File hashes are recorded in `manifest.csv`.
+
+Verify the archived evidence without training:
+
+```sh
+python scripts/verify_mlp.py
+```
+
+This checks the file manifest and dataset hashes, rebuilds the test sets and
+scalers, independently evaluates all checkpoints, validates the audit chains,
+replays 6,750 S4 client-round strike decisions and checks the supplied numerical
+tables. It does not establish that attribution is correct merely because a hash
+chain is valid. Cosine values are read from the logs because intermediate client
+update vectors are not archived.
+
+Regenerate the tables and diagnostics without training:
+
+```sh
+python scripts/export_mlp_results.py
+```
+
+Exports go to `outputs/mlp_exports/`. The exporter recomputes classification
+metrics from saved predictions and attribution from the logs. It also exports
+all S4 client-round traces, clean false-flag diagnostics and histories of missed
+attackers. These support the reported clean-run false flags and the two missed
+attackers in seed 0 at probability 1.0, alongside the successful detections.
+
+Run the full 40-run experiment independently:
+
+```sh
+python scripts/run_mlp.py
+python scripts/verify_mlp.py --input-dir outputs/mlp --compare-reference
+python scripts/export_mlp_results.py --input-dir outputs/mlp --output-dir outputs/mlp_rerun_exports
+```
+
+The default is one worker. Add `--workers 2` or another positive count to run
+seeds concurrently if memory permits. Each worker uses one BLAS thread. Use
+`--data-dir PATH` with the runner and verifier for another verified dataset copy.
+The runner and exporter refuse existing output directories. Select a new
+`--output-dir PATH` for a rerun; the primary G0-G4 outputs are separate.
+
+A short execution check, which is not a manuscript result:
+
+```sh
+python scripts/run_mlp.py --seeds 0 --rounds 8 --cases clean_fedavg clean_s4 --output-dir outputs/mlp_smoke
+python scripts/verify_mlp.py --input-dir outputs/mlp_smoke
+```
+
+Accuracy and F1 use scale 0-1 in the CSV files. Table 6 expresses accuracy as a
+percentage. Attribution precision and recall use distinct clients ever flagged,
+not traffic samples. Mean detection time includes detected attackers only.
+Cumulative recall 1.0 does not imply continuous exclusion, and final malicious
+weight share is an aggregation weight, not a measure of attack damage. Clean
+S4 false flags, missed attackers and residual weights expose model dependence
+under the unchanged security parameters.
+
 ## Client attribution evidence
 
 Attribution evidence for manuscript Table 5 is available in
@@ -250,6 +326,10 @@ Full experiment reproduction remains available via
   and configuration summaries for manuscript Tables 4-5.
 - `reference/client_attribution/`: archived logs, attribution traces, per-seed
   counts and supporting figures for manuscript Table 5.
+- `reference/mlp/`: Table 6 metrics, MLP checkpoints, predictions, scalers,
+  audit chains and attribution diagnostics.
+- `configs/MLP.json` and `scripts/{run_mlp,verify_mlp,export_mlp_results}.py`:
+  fixed nonlinear protocol, training, verification and numerical exports.
 - `outputs/<group>/runs/<run>/`: configuration, logs, audit chains, models,
   workbook and diagnostic figures; `outputs/runs.json`: selected run index.
 - `paper/{tables,excel,figures}/`: newly generated tables, workbooks, PDF/PNG figures.
