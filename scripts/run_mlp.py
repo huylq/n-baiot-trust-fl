@@ -15,8 +15,8 @@ os.environ["MKL_NUM_THREADS"] = "1"
 import numpy as np
 from threadpoolctl import threadpool_limits
 
-from mlp_common import (ROOT, add_clean_differences, load_protocol, require,
-                        runtime_config, sha, summary_frame, write_csv, write_json)
+from mlp_common import (ROOT, add_clean_differences, dataset_manifest_digest, load_protocol,
+                        require, runtime_config, summary_frame, write_csv, write_json)
 from prepare_dataset import verify_dataset
 from src.data_loader import DataRepository
 from src.federated import ExperimentRunner
@@ -111,7 +111,7 @@ def main():
     output = args.output_dir.resolve()
     require(not output.exists(), "Output directory already exists. Choose a new --output-dir.")
     verify_dataset(args.data_dir.resolve())
-    require(sha(ROOT / "data/dataset20000_manifest.csv") == protocol["dataset_manifest_sha256"], "Dataset manifest changed")
+    require(dataset_manifest_digest() == protocol["dataset_manifest_sha256"], "Dataset manifest changed")
     output.mkdir(parents=True)
     (output / "logs").mkdir()
     (output / "splits_and_scalers").mkdir()

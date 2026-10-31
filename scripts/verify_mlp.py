@@ -10,7 +10,8 @@ import pandas as pd
 from threadpoolctl import threadpool_limits
 
 from export_mlp_results import collect_evidence, compare_frames
-from mlp_common import REFERENCE, ROOT, check_manifest, load_protocol, require, runtime_config, sha
+from mlp_common import (REFERENCE, ROOT, check_manifest, dataset_manifest_digest,
+                        load_protocol, require, runtime_config, sha)
 from prepare_dataset import verify_dataset
 from src.data_loader import DataRepository
 
@@ -18,7 +19,7 @@ from src.data_loader import DataRepository
 def verify(directory, data_dir, compare_reference=False):
     manifest_files = check_manifest(directory) if directory == REFERENCE.resolve() else None
     protocol = load_protocol(directory / "protocol.json")
-    require(sha(ROOT / "data/dataset20000_manifest.csv") == protocol["dataset_manifest_sha256"], "Dataset manifest changed")
+    require(dataset_manifest_digest() == protocol["dataset_manifest_sha256"], "Dataset manifest changed")
     verify_dataset(data_dir)
     tables, report = collect_evidence(directory)
     if compare_reference:

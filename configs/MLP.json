@@ -136,6 +136,7 @@
     }
   ],
   "planned_federated_runs": 40,
-  "dataset_manifest_sha256": "97bf84c0762c5a2baf8df7204e06ef26b638f7d93c6897f5f2a21bcb37de77ec",
-  "parameter_selection": "Architecture, optimizer, grid and security parameters fixed before training. No test-driven tuning."
+  "dataset_manifest_sha256": "b99200251883634eb2c6c73a1c8b535f71514b87ce856914e2cc7f938e2f9a1a",
+  "parameter_selection": "Architecture, optimizer, grid and security parameters fixed before training. No test-driven tuning.",
+  "dataset_manifest_hash_encoding": "UTF-8 with LF line endings"
 }

@@ -58,6 +58,9 @@ covers every reference file except the manifest itself. `source_manifest.csv`
 identifies the public model, runner, export and verification code shipped with
 the archive; it is a release manifest, not a claim that those packaged scripts
 had their current paths when the experiments were performed.
+The dataset-manifest digest in the MLP protocol uses LF-normalized UTF-8 bytes
+so checkout line endings do not change it. Individual dataset CSV hashes still
+use their exact original bytes.
 
 `scripts/run_mlp.py` trains into a fresh `outputs/mlp/` directory. The optional
 seed, round and case selections are for partial checks. Only the complete

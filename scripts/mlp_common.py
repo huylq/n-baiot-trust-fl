@@ -30,6 +30,11 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def dataset_manifest_digest():
+    contents = (ROOT / "data/dataset20000_manifest.csv").read_bytes().replace(b"\r\n", b"\n")
+    return hashlib.sha256(contents).hexdigest()
+
+
 def load_protocol(path=None):
     return json.loads((Path(path) if path else ROOT / "configs/MLP.json").read_text(encoding="utf-8"))
 
